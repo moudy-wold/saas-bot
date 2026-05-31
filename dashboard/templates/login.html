@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Login</title>
+    <link rel="stylesheet" href="/static/dashboard.css" />
+  </head>
+  <body>
+    <main class="container auth-layout">
+      <section class="panel auth-card">
+        <h1>Dashboard Login</h1>
+        <p class="help-text">Sign in with tenant slug to manage your bot settings and forms.</p>
+
+        {% if message %}
+        <section class="panel success compact">{{ message }}</section>
+        {% endif %}
+
+        {% if error %}
+        <section class="panel error compact">{{ error }}</section>
+        {% endif %}
+
+        <form method="post" action="/login" class="form-grid">
+          <label for="tenant_slug">Tenant Slug</label>
+          <input id="tenant_slug" name="tenant_slug" type="text" required />
+
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required autofocus />
+
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required />
+
+          <button type="submit">Sign In</button>
+        </form>
+
+        <p class="auth-alt-link">
+          New tenant? <a href="/register">Create account</a>
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

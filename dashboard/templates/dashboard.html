@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bot Control Dashboard</title>
+    <link rel="stylesheet" href="/static/dashboard.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="panel hero">
+        <div class="hero-topbar">
+          <h1>Telegram Bot Control Dashboard</h1>
+          <form method="post" action="/logout">
+            <button type="submit" class="danger-btn">Logout</button>
+          </form>
+        </div>
+        <p class="tenant-badge">Tenant: {{ tenant_name }} ({{ tenant_slug }})</p>
+        <p>Configure token, webhook, and dynamic form without editing source code.</p>
+      </section>
+
+      {% if message %}
+      <section class="panel success">{{ message }}</section>
+      {% endif %}
+
+      {% if error %}
+      <section class="panel error">{{ error }}</section>
+      {% endif %}
+
+      <section class="panel">
+        <h2>General Settings</h2>
+        <form method="post" action="/settings/general" class="form-grid">
+          <label for="bot_token">Bot Token</label>
+          <input
+            id="bot_token"
+            name="bot_token"
+            type="text"
+            value="{{ bot_token }}"
+            required
+          />
+
+          <label for="webhook_url">Webhook URL</label>
+          <input
+            id="webhook_url"
+            name="webhook_url"
+            type="url"
+            value="{{ webhook_url }}"
+            required
+          />
+
+          <button type="submit">Save General Settings</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Form Configuration</h2>
+        <p class="help-text">
+          Update full form JSON. Supported field types: text, number, select.
+        </p>
+        <form method="post" action="/settings/form" class="form-grid">
+          <label for="form_json">Form JSON</label>
+          <textarea id="form_json" name="form_json" rows="18" required>{{ form_json }}</textarea>
+          <button type="submit">Save Form Config</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

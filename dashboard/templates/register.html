@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Tenant</title>
+    <link rel="stylesheet" href="/static/dashboard.css" />
+  </head>
+  <body>
+    <main class="container auth-layout">
+      <section class="panel auth-card">
+        <h1>Create Tenant Account</h1>
+        <p class="help-text">
+          Each tenant gets a dedicated SQLite database used by the bot and can be shared with Django.
+        </p>
+
+        {% if message %}
+        <section class="panel success compact">{{ message }}</section>
+        {% endif %}
+
+        {% if error %}
+        <section class="panel error compact">{{ error }}</section>
+        {% endif %}
+
+        <form method="post" action="/register" class="form-grid">
+          <label for="tenant_name">Tenant Name</label>
+          <input id="tenant_name" name="tenant_name" type="text" required />
+
+          <label for="tenant_slug">Tenant Slug</label>
+          <input id="tenant_slug" name="tenant_slug" type="text" required />
+
+          <label for="username">Admin Username</label>
+          <input id="username" name="username" type="text" required />
+
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required />
+
+          <label for="confirm_password">Confirm Password</label>
+          <input id="confirm_password" name="confirm_password" type="password" required />
+
+          <button type="submit">Create Tenant</button>
+        </form>
+
+        <p class="auth-alt-link">
+          Already have tenant? <a href="/login">Sign in</a>
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
