@@ -1,0 +1,17 @@
+{% extends 'portal/base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<main class="shell auth-shell">
+  <section class="card auth-card">
+    <h1>Tenant Login</h1>
+    <p class="subtle">Enter your tenant slug and admin credentials.</p>
+    {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Sign In</button>
+    </form>
+    <p class="link-row"><a href="{% url 'register' %}">Create tenant</a></p>
+  </section>
+</main>
+{% endblock %}

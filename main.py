@@ -1,4 +1,5 @@
 import asyncio
+from pathlib import Path
 
 from aiogram import Bot, Dispatcher
 
@@ -12,12 +13,17 @@ from utils.logger import setup_logger
 logger = setup_logger(__name__)
 
 
+def _has_real_token(token: str) -> bool:
+    normalized = token.strip()
+    return bool(normalized) and normalized != "YOUR_TELEGRAM_BOT_TOKEN"
+
+
 async def run_tenant_bot(tenant_repo: TenantSettingsRepository) -> None:
     tenant = tenant_repo.get_tenant_info()
     tenant_slug = tenant["slug"]
     token = tenant_repo.get_bot_token()
 
-    if not token or token == "YOUR_TELEGRAM_BOT_TOKEN":
+    if not _has_real_token(token):
         logger.warning("Skipping tenant %s because bot token is not configured", tenant_slug)
         return
 
@@ -38,12 +44,37 @@ async def run_tenant_bot(tenant_repo: TenantSettingsRepository) -> None:
 async def main() -> None:
     tenant_db_paths = list_tenant_db_paths(TENANTS_DIR)
     if not tenant_db_paths:
-        logger.error("No tenant databases found. Create tenant first from dashboard.")
+        logger.error("No tenant databases found. Create a tenant from the web dashboard first.")
+        return
+
+    runnable_paths: list[Path] = []
+    skipped_slugs: list[str] = []
+
+    for path in tenant_db_paths:
+        repo = TenantSettingsRepository(path)
+        tenant_slug = repo.get_tenant_info()["slug"]
+
+        if _has_real_token(repo.get_bot_token()):
+            runnable_paths.append(path)
+        else:
+            skipped_slugs.append(tenant_slug)
+
+    if skipped_slugs:
+        logger.info(
+            "Skipping %d tenant(s) without bot tokens: %s",
+            len(skipped_slugs),
+            ", ".join(skipped_slugs),
+        )
+
+    if not runnable_paths:
+        logger.warning(
+            "No tenant is ready for polling yet. Open the web dashboard, set a bot token, then run main.py again."
+        )
         return
 
     tasks = [
         asyncio.create_task(run_tenant_bot(TenantSettingsRepository(path)))
-        for path in tenant_db_paths
+        for path in runnable_paths
     ]
 
     results = await asyncio.gather(*tasks, return_exceptions=True)

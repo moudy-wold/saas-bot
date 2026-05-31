@@ -34,4 +34,39 @@ DEFAULT_SETTINGS: dict[str, Any] = {
             },
         ],
     },
+    "bot_profile": {
+        "start_behavior": "menu",
+        "welcome_message": "Welcome! Please choose a service.",
+        "commands": [
+            {
+                "command": "menu",
+                "description": "Show main menu",
+                "action": "show_buttons",
+            },
+            {
+                "command": "services",
+                "description": "Show available services",
+                "action": "show_services",
+            },
+            {
+                "command": "book",
+                "description": "Start default booking/order form",
+                "action": "start_form",
+            },
+        ],
+        "buttons": [
+            {"label": "Book / Order", "action": "start_form"},
+            {"label": "Services", "action": "show_services"},
+            {"label": "Help", "action": "reply", "reply_text": "Use /menu to see all options."},
+        ],
+        "services": [
+            {
+                "name": "General Service",
+                "description": "Default service entry",
+                "price": "",
+                "api_endpoint": "",
+            }
+        ],
+        "forms": [],
+    },
 }
